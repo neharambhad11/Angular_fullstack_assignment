@@ -1,0 +1,192 @@
+<div class="product-form-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div>
+      <h2>Product Management</h2>
+      <p>Manage all your products here.</p>
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="refreshProducts()">
+
+        Refresh
+
+      </button>
+
+      <a
+        routerLink="/products/new"
+        class="btn btn-primary">
+
+        + Add Product
+
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (loading()) {
+
+    <div class="message loading">
+
+      Loading products...
+
+    </div>
+
+  }
+
+
+  <!-- Error -->
+  @if (errorMessage()) {
+
+    <div class="message error">
+
+      {{ errorMessage() }}
+
+      <button
+        type="button"
+        (click)="refreshProducts()">
+
+        Try Again
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- Product Table -->
+  @if (!loading() && !errorMessage()) {
+
+    @if (products().length > 0) {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>#</th>
+
+              <th>Product Name</th>
+
+              <th>Description</th>
+
+              <th>Price</th>
+
+              <th>Product ID</th>
+
+              <th>Actions</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              product of products();
+              track getProductId(product);
+              let i = $index
+            ) {
+
+              <tr>
+
+                <td>
+                  {{ i + 1 }}
+                </td>
+
+                <td>
+                  <strong>{{ product.name }}</strong>
+                </td>
+
+                <td>
+                  {{ product.description || 'No description' }}
+                </td>
+
+                <td>
+                  {{ product.price | currency:'INR':'symbol':'1.2-2' }}
+                </td>
+
+                <td>
+                  {{ getProductId(product) }}
+                </td>
+
+                <td>
+
+                  <div class="action-buttons">
+
+                    <a
+  [routerLink]="[
+    '/products',
+    getProductId(product),
+    'edit'
+  ]"
+  class="btn btn-edit">
+
+  Edit
+
+</a>
+
+                    <button
+                      type="button"
+                      class="btn btn-delete"
+                      (click)="deleteProduct(product)">
+
+                      Delete
+
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+    @else {
+
+      <div class="empty-state">
+
+        <h3>No Products Found</h3>
+
+        <p>
+          There are currently no products available.
+        </p>
+
+        <a
+          routerLink="/products/new"
+          class="btn btn-primary">
+
+          Add Your First Product
+
+        </a>
+
+      </div>
+
+    }
+
+  }
+
+</div>

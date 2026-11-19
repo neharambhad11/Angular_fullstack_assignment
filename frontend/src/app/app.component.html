@@ -1,0 +1,38 @@
+<header class="navbar">
+
+  <h2>Assessment Portal</h2>
+
+  @if (auth.isLoggedIn()) {
+
+    <nav>
+      <a routerLink="/dashboard" routerLinkActive="active">
+        Dashboard
+      </a>
+
+      <a routerLink="/products" routerLinkActive="active">
+        Products
+      </a>
+
+      <a routerLink="/orders" routerLinkActive="active">
+        Orders
+      </a>
+
+      <button (click)="logout()">
+        Logout
+      </button>
+    </nav>
+
+  } @else {
+
+    <nav>
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    </nav>
+
+  }
+
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

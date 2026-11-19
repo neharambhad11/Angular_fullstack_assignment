@@ -1,0 +1,233 @@
+<div class="orders-container">
+
+  <!-- Header -->
+  <div class="page-header">
+
+    <div>
+      <h2>Order Management</h2>
+      <p>Manage and track your order history.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-refresh"
+      (click)="refreshOrders()">
+
+      Refresh Orders
+
+    </button>
+
+  </div>
+
+
+  <!-- Create Order Section -->
+  <div class="create-order-card">
+
+    <h3>Create New Order</h3>
+
+    <p>
+      Enter MongoDB product IDs separated by commas.
+    </p>
+
+    <form
+      [formGroup]="orderForm"
+      (ngSubmit)="createOrder()">
+
+      <div class="form-group">
+
+        <label for="productIds">Product IDs</label>
+
+        <input
+          id="productIds"
+          type="text"
+          formControlName="productIds"
+          placeholder="Example: 672abc123, 672abc456"
+        />
+
+        @if (
+          orderForm.controls.productIds.invalid &&
+          orderForm.controls.productIds.touched
+        ) {
+
+          <small class="validation-error">
+            Please enter at least one product ID.
+          </small>
+
+        }
+
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="loading()">
+
+        {{ loading() ? 'Processing...' : 'Create Order' }}
+
+      </button>
+
+    </form>
+
+  </div>
+
+
+  <!-- Success Message -->
+  @if (successMessage()) {
+
+    <div class="alert success">
+      {{ successMessage() }}
+    </div>
+
+  }
+
+
+  <!-- Error Message -->
+  @if (errorMessage()) {
+
+    <div class="alert error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+
+  <!-- Order History -->
+  <div class="history-section">
+
+    <div class="history-header">
+
+      <div>
+        <h3>Order History</h3>
+        <p>All your previously created orders.</p>
+      </div>
+
+      <span class="order-count">
+        Total Orders: {{ orders().length }}
+      </span>
+
+    </div>
+
+
+    @if (loading()) {
+
+      <div class="loading">
+        Loading order history...
+      </div>
+
+    }
+
+    @else if (orders().length > 0) {
+
+      <div class="table-responsive">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Order ID</th>
+              <th>Product IDs</th>
+              <th>Total Amount</th>
+              <th>Order Date</th>
+              <th>Actions</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for (
+              order of orders();
+              track getOrderId(order);
+              let i = $index
+            ) {
+
+              <tr>
+
+                <td>
+                  <strong>#{{ getOrderId(order) }}</strong>
+                </td>
+
+                <td>
+
+                  <div class="product-id-list">
+
+                    @for (
+                      productId of getProductIds(order);
+                      track productId
+                    ) {
+
+                      <span class="product-id">
+                        {{ productId }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </td>
+
+                <td class="amount">
+                  {{ order.totalAmount | currency:'INR':'symbol':'1.2-2' }}
+                </td>
+
+                <td>
+                  {{ order.createdAt ? (order.createdAt | date:'dd MMM yyyy, hh:mm a') : 'N/A' }}
+                </td>
+
+                <td>
+
+                  <div class="action-buttons">
+
+                    <button
+                      type="button"
+                      class="btn btn-edit"
+                      (click)="updateOrder(order)">
+
+                      Edit
+
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-delete"
+                      (click)="deleteOrder(order)">
+
+                      Delete
+
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+    @else {
+
+      <div class="empty-state">
+
+        <h3>No Orders Found</h3>
+
+        <p>
+          Your order history is currently empty.
+          Create your first order above.
+        </p>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

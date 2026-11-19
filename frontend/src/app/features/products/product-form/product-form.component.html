@@ -1,0 +1,182 @@
+<div class="product-form-container">
+
+  <div class="form-header">
+
+    <div>
+      <h2>
+        {{ isEditMode ? 'Update Product' : 'Add New Product' }}
+      </h2>
+
+      <p>
+        {{
+          isEditMode
+            ? 'Update the selected product details.'
+            : 'Enter details to create a new product.'
+        }}
+      </p>
+    </div>
+
+    <a routerLink="/products" class="btn btn-back">
+      ← Back to Products
+    </a>
+
+  </div>
+
+
+  @if (loading() && isEditMode) {
+
+    <div class="loading">
+      Loading product details...
+    </div>
+
+  }
+
+
+  @if (errorMessage()) {
+
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+
+  @if (!loading() || !isEditMode) {
+
+    <div class="form-card">
+
+      <form
+        [formGroup]="productForm"
+        (ngSubmit)="submit()">
+
+        <!-- Product Name -->
+        <div class="form-group">
+
+          <label for="name">Product Name</label>
+
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Enter product name"
+          />
+
+          @if (
+            productForm.controls.name.touched &&
+            productForm.controls.name.invalid
+          ) {
+
+            <small class="validation-error">
+
+              @if (productForm.controls.name.errors?.['required']) {
+                Product name is required.
+              }
+
+              @if (productForm.controls.name.errors?.['minlength']) {
+                Minimum 2 characters required.
+              }
+
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Product Price -->
+        <div class="form-group">
+
+          <label for="price">Product Price (₹)</label>
+
+          <input
+            id="price"
+            type="number"
+            formControlName="price"
+            placeholder="Enter product price"
+          />
+
+          @if (
+            productForm.controls.price.touched &&
+            productForm.controls.price.invalid
+          ) {
+
+            <small class="validation-error">
+              Please enter a valid price greater than zero.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Product Description -->
+        <div class="form-group">
+
+          <label for="description">Description</label>
+
+          <textarea
+            id="description"
+            rows="4"
+            formControlName="description"
+            placeholder="Enter product description">
+          </textarea>
+
+          @if (
+            productForm.controls.description.touched &&
+            productForm.controls.description.invalid
+          ) {
+
+            <small class="validation-error">
+              Description must contain at least 5 characters.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- Buttons -->
+        <div class="form-actions">
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="loading()">
+
+            {{
+              loading()
+                ? 'Saving...'
+                : isEditMode
+                  ? 'Update Product'
+                  : 'Create Product'
+            }}
+
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-reset"
+            (click)="resetForm()"
+            [disabled]="loading()">
+
+            Reset
+
+          </button>
+
+          <a
+            routerLink="/products"
+            class="btn btn-cancel">
+
+            Cancel
+
+          </a>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  }
+
+</div>

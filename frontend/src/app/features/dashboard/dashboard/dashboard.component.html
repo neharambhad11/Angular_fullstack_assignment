@@ -1,0 +1,191 @@
+<div class="container">
+
+  <h1>Dashboard</h1>
+
+  <p>Welcome to your Full Stack Assessment Application.</p>
+
+  <div class="dashboard-grid">
+
+    <div class="dashboard-card">
+
+      <h2>Products</h2>
+
+      <p>Manage products in MongoDB.</p>
+
+      <a routerLink="/products">
+        View Products →
+      </a>
+
+    </div>
+
+    <div class="dashboard-card">
+
+      <h2>Orders</h2>
+
+      <p>Manage orders in MSSQL.</p>
+
+      <a routerLink="/orders">
+        View Orders →
+      </a>
+
+    </div>
+
+  </div>
+
+  <div class="weather-container">
+
+  <div class="weather-header">
+    <h2>Weather Dashboard</h2>
+    <p>Check current weather conditions for any city.</p>
+  </div>
+
+  <!-- City Search -->
+  <div class="weather-search">
+
+    <input
+      type="text"
+      [ngModel]="city()"
+      (ngModelChange)="onCityChange($event)"
+      (keyup.enter)="getWeather()"
+      placeholder="Enter city name"
+    />
+
+    <button
+      type="button"
+      (click)="getWeather()"
+      [disabled]="loading()">
+
+      {{ loading() ? 'Loading...' : 'Get Weather' }}
+
+    </button>
+
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+
+    <div class="weather-message">
+      Fetching weather information...
+    </div>
+
+  }
+
+  <!-- Error -->
+  @if (errorMessage()) {
+
+    <div class="weather-error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+  <!-- Weather Details -->
+  @if (weather(); as data) {
+
+    <div class="weather-card">
+
+      <!-- Location -->
+      <div class="weather-location">
+
+        <h2>
+          {{ data.name }}, {{ data.sys?.country }}
+        </h2>
+
+        <p>Current Weather</p>
+
+      </div>
+
+      <!-- Temperature -->
+      <div class="weather-main">
+
+        <div class="temperature">
+          {{ data.main?.temp | number:'1.0-1' }}°C
+        </div>
+
+        <div class="weather-description">
+
+          {{ data.weather?.[0]?.description | titlecase }}
+
+        </div>
+
+        @if (data.weather?.[0]?.icon) {
+
+          <img
+            [src]="'https://openweathermap.org/img/wn/' + data.weather[0].icon + '@2x.png'"
+            alt="Weather icon"
+            width="90"
+            height="90"
+          />
+
+        }
+
+      </div>
+
+      <!-- Weather Information -->
+      <div class="weather-details">
+
+        <div class="weather-detail">
+          <span>Feels Like</span>
+          <strong>
+            {{ data.main?.feels_like }}°C
+          </strong>
+        </div>
+
+        <div class="weather-detail">
+          <span>Minimum Temperature</span>
+          <strong>
+            {{ data.main?.temp_min }}°C
+          </strong>
+        </div>
+
+        <div class="weather-detail">
+          <span>Maximum Temperature</span>
+          <strong>
+            {{ data.main?.temp_max }}°C
+          </strong>
+        </div>
+
+        <div class="weather-detail">
+          <span>Humidity</span>
+          <strong>
+            {{ data.main?.humidity }}%
+          </strong>
+        </div>
+
+        <div class="weather-detail">
+          <span>Pressure</span>
+          <strong>
+            {{ data.main?.pressure }} hPa
+          </strong>
+        </div>
+
+        <div class="weather-detail">
+          <span>Wind Speed</span>
+          <strong>
+            {{ data.wind?.speed }} m/s
+          </strong>
+        </div>
+
+        <div class="weather-detail">
+          <span>Visibility</span>
+          <strong>
+            {{ data.visibility! / 1000 }} km
+          </strong>
+        </div>
+
+        <div class="weather-detail">
+          <span>Cloudiness</span>
+          <strong>
+            {{ data.clouds?.all }}%
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
+
+</div>
